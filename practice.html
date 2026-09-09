@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keyboard Practice</title>
+  <link rel="stylesheet" href="practice.css">
+</head>
+<body>
+  <main class="app-shell">
+    <div id="timer" class="timer" aria-live="polite" hidden>00:00</div>
+    <section id="setup-screen" class="screen" aria-labelledby="setup-title">
+      <form id="setup-form" autocomplete="off">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" required spellcheck="false" autocomplete="off">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required spellcheck="false" autocomplete="new-password">
+        <button class="primary-button" type="submit">Start</button>
+      </form>
+    </section>
+
+    <section id="practice-screen" class="screen" hidden aria-label="Practice">
+      <div class="lesson-picker">
+        <label for="lesson-select">Lesson</label>
+        <select id="lesson-select">
+          <option value="find">Find keys</option>
+          <option value="sequence">Type in order</option>
+          <option value="recall">Recall</option>
+          <option value="login">Login simulation</option>
+        </select>
+      </div>
+      <p id="phase-label" class="phase-label"></p>
+      <div id="target" class="target" aria-live="polite"></div>
+      <div id="sequence" class="sequence" aria-label="Practice sequence"></div>
+      <div id="keyboard" class="keyboard" aria-label="On-screen keyboard"></div>
+    </section>
+
+    <section id="transition-screen" class="screen transition-screen" hidden aria-label="Success">
+      <div class="transition-art" aria-hidden="true">
+        <span class="transition-star star-a">✦</span>
+        <span class="transition-star star-b">✦</span>
+        <span class="transition-star star-c">✦</span>
+        <span class="transition-spark spark-a"></span>
+        <span class="transition-spark spark-b"></span>
+        <span class="transition-spark spark-c"></span>
+        <span class="transition-spark spark-d"></span>
+      </div>
+    </section>
+
+    <section id="login-screen" class="screen login-screen" hidden aria-labelledby="login-title">
+      <div class="lesson-picker">
+        <label for="login-lesson-select">Lesson</label>
+        <select id="login-lesson-select">
+          <option value="login">Login simulation</option>
+          <option value="find">Find keys</option>
+          <option value="sequence">Type in order</option>
+          <option value="recall">Recall</option>
+        </select>
+      </div>
+      <h1 id="login-title">Username</h1>
+      <form id="username-form" class="login-form" autocomplete="off">
+        <label for="login-username">Username</label>
+        <input id="login-username" type="text" required spellcheck="false" autocomplete="off">
+        <button id="username-hint-button" class="secondary-button" type="button">Show username</button>
+        <div id="username-hint" class="sequence login-hint" hidden aria-label="Username hint"></div>
+        <button class="primary-button" type="submit">Next</button>
+      </form>
+      <form id="password-form" class="login-form" hidden autocomplete="off">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" required spellcheck="false" autocomplete="off">
+        <div id="login-password-hint" class="sequence login-hint" hidden aria-label="Password hint"></div>
+        <label class="checkbox-label"><input id="show-password" type="checkbox"> Show password</label>
+        <button class="primary-button" type="submit">Log in</button>
+      </form>
+      <div id="login-keyboard" class="keyboard" aria-label="On-screen keyboard"></div>
+    </section>
+
+    <section id="complete-screen" class="screen" hidden aria-labelledby="complete-title">
+      <h1 id="complete-title">Congratulations!</h1>
+      <button id="clear-button" class="primary-button" type="button">Again</button>
+    </section>
+
+    <button id="unset-button" class="unset-button" type="button">Unset password</button>
+  </main>
+
+  <template id="key-template">
+    <div class="key" data-key>
+      <span class="key-main" data-key-main></span>
+      <span class="key-shift-label" data-key-shift></span>
+    </div>
+  </template>
+  <template id="celebration-template">
+    <div class="celebration" aria-hidden="true">
+      <span class="celebration-star star-one">✦</span>
+      <span class="celebration-star star-two">✦</span>
+      <span class="celebration-star star-three">✦</span>
+      <span class="celebration-confetti confetti-one"></span>
+      <span class="celebration-confetti confetti-two"></span>
+      <span class="celebration-confetti confetti-three"></span>
+      <span class="celebration-confetti confetti-four"></span>
+    </div>
+  </template>
+  <script src="practice.js"></script>
+</body>
+</html>
