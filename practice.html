@@ -9,6 +9,15 @@
 <body>
   <main class="app-shell">
     <div id="timer" class="timer" aria-live="polite" hidden>00:00</div>
+    <div class="lesson-picker">
+      <label for="lesson-select">Lesson</label>
+      <select id="lesson-select">
+        <option value="find">Find keys</option>
+        <option value="sequence">Type in order</option>
+        <option value="recall">Recall</option>
+        <option value="login">Login simulation</option>
+      </select>
+    </div>
     <section id="setup-screen" class="screen" aria-labelledby="setup-title">
       <form id="setup-form" autocomplete="off">
         <label for="username">Username</label>
@@ -20,22 +29,14 @@
     </section>
 
     <section id="practice-screen" class="screen" hidden aria-label="Practice">
-      <div class="lesson-picker">
-        <label for="lesson-select">Lesson</label>
-        <select id="lesson-select">
-          <option value="find">Find keys</option>
-          <option value="sequence">Type in order</option>
-          <option value="recall">Recall</option>
-          <option value="login">Login simulation</option>
-        </select>
-      </div>
       <p id="phase-label" class="phase-label"></p>
       <div id="target" class="target" aria-live="polite"></div>
       <div id="sequence" class="sequence" aria-label="Practice sequence"></div>
       <div id="keyboard" class="keyboard" aria-label="On-screen keyboard"></div>
     </section>
 
-    <section id="transition-screen" class="screen transition-screen" hidden aria-label="Success">
+    <section id="transition-screen" class="screen transition-screen" hidden aria-label="Success" tabindex="0">
+      <div id="transition-avatar" class="success-avatar" aria-hidden="true"></div>
       <div class="transition-art" aria-hidden="true">
         <span class="transition-star star-a">✦</span>
         <span class="transition-star star-b">✦</span>
@@ -45,18 +46,10 @@
         <span class="transition-spark spark-c"></span>
         <span class="transition-spark spark-d"></span>
       </div>
+      <p class="transition-message"><strong>Success!</strong><span>Click to continue or press Enter</span></p>
     </section>
 
     <section id="login-screen" class="screen login-screen" hidden aria-labelledby="login-title">
-      <div class="lesson-picker">
-        <label for="login-lesson-select">Lesson</label>
-        <select id="login-lesson-select">
-          <option value="login">Login simulation</option>
-          <option value="find">Find keys</option>
-          <option value="sequence">Type in order</option>
-          <option value="recall">Recall</option>
-        </select>
-      </div>
       <h1 id="login-title">Username</h1>
       <form id="username-form" class="login-form" autocomplete="off">
         <label for="login-username">Username</label>
@@ -75,9 +68,10 @@
       <div id="login-keyboard" class="keyboard" aria-label="On-screen keyboard"></div>
     </section>
 
-    <section id="complete-screen" class="screen" hidden aria-labelledby="complete-title">
+    <section id="complete-screen" class="screen complete-screen" hidden aria-labelledby="complete-title" tabindex="0">
+      <div id="complete-avatar" class="success-avatar" aria-hidden="true"></div>
       <h1 id="complete-title">Congratulations!</h1>
-      <button id="clear-button" class="primary-button" type="button">Again</button>
+      <p class="complete-message">Click to continue or press Enter</p>
     </section>
 
     <button id="unset-button" class="unset-button" type="button">Unset password</button>

@@ -34,7 +34,7 @@ button { cursor: pointer; }
   padding: 28px 0 48px;
 }
 
-.timer { position: fixed; top: 20px; left: 28px; z-index: 2; color: var(--ink); font: 700 1.4rem Arial, sans-serif; }
+.timer { position: fixed; top: 20px; left: 50%; z-index: 2; transform: translateX(-50%); color: var(--ink); font: 700 1.8rem Arial, sans-serif; }
 .timer.overtime { color: var(--green); }
 
 .eyebrow, .phase-label {
@@ -44,6 +44,7 @@ button { cursor: pointer; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+.phase-label { text-align: center; font-size: 1.1rem; }
 
 .screen {
   position: relative;
@@ -52,9 +53,10 @@ button { cursor: pointer; }
 }
 
 .lesson-picker {
-  position: absolute;
-  top: -46px;
-  right: 0;
+  position: fixed;
+  left: 16px;
+  bottom: 14px;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -98,6 +100,7 @@ input:focus, button:focus-visible { outline: 3px solid var(--focus); outline-off
 .sequence .password-uppercase { color: var(--blue); }
 .sequence .password-lowercase { color: #b8a800; }
 .sequence .done { opacity: 0.45; }
+.sequence .ghost { border: 2px dashed var(--line); border-radius: 5px; }
 .sequence .current { color: var(--ink); border: 3px solid currentColor; border-radius: 5px; }
 .sequence .current.username-character { color: var(--orange); background: #fff1d9; }
 .sequence .current.password-uppercase { color: var(--blue); background: #dceafb; }
@@ -106,7 +109,16 @@ input:focus, button:focus-visible { outline: 3px solid var(--focus); outline-off
 .keyboard { display: grid; gap: 10px; width: 100%; margin: 28px 0 18px; }
 
 .transition-screen { display: grid; place-items: center; min-height: 62vh; cursor: pointer; }
+.transition-screen:focus { outline: none; }
+.success-avatar { width: 220px; height: 195.56px; overflow: hidden; background-image: url("avatars.png"); background-size: 400% 300%; background-repeat: no-repeat; }
 .transition-art { position: relative; width: 300px; height: 220px; }
+.transition-message { display: grid; gap: 8px; margin: -24px 0 0; text-align: center; color: var(--ink); }
+.transition-message strong { font-size: 1.35rem; }
+.transition-message span { color: var(--muted); font-size: 0.9rem; }
+.complete-screen { cursor: pointer; }
+.complete-screen:focus { outline: none; }
+.complete-screen { display: grid; place-items: center; min-height: 62vh; text-align: center; }
+.complete-message { margin: 0; color: var(--muted); font-size: 0.9rem; }
 .transition-star { position: absolute; color: var(--orange); font-size: 5rem; animation: transition-star 1.8s ease-in-out infinite; }
 .star-a { left: 35px; top: 50px; }
 .star-b { left: 115px; top: 0; color: var(--blue); animation-delay: 0.2s; }
@@ -201,7 +213,8 @@ input:focus, button:focus-visible { outline: 3px solid var(--focus); outline-off
   .key-shift-label { top: 4px; right: 5px; font-size: 0.55rem; }
   .key-row { gap: 3px; }
   .keyboard { gap: 3px; }
-  .timer { top: 12px; left: 12px; font-size: 1rem; }
+  .timer { top: 12px; left: 50%; font-size: 1.5rem; }
+  .success-avatar { width: 180px; height: 160px; }
   .sequence { gap: 5px; }
   .sequence span { width: 1.7rem; height: 2.1rem; }
 }

@@ -2,6 +2,8 @@
 
 A local-only Chrome extension scaffold for private five-minute keyboard practice on shared school devices.
 
+[Online Demo](https://johnpope-ccsdut.github.io/password-practice/practice.html)
+
 ## Load locally
 
 1. Open `chrome://extensions`.

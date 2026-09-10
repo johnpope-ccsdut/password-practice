@@ -60,7 +60,6 @@ const loginKeyboard = document.querySelector("#login-keyboard");
 const target = document.querySelector("#target");
 const sequence = document.querySelector("#sequence");
 const lessonSelect = document.querySelector("#lesson-select");
-const loginLessonSelect = document.querySelector("#login-lesson-select");
 const loginUsername = document.querySelector("#login-username");
 const loginPassword = document.querySelector("#login-password");
 const usernameForm = document.querySelector("#username-form");
@@ -71,6 +70,8 @@ const loginPasswordHint = document.querySelector("#login-password-hint");
 const keyTemplate = document.querySelector("#key-template");
 const celebrationTemplate = document.querySelector("#celebration-template");
 const timerElement = document.querySelector("#timer");
+const transitionAvatar = document.querySelector("#transition-avatar");
+const completeAvatar = document.querySelector("#complete-avatar");
 
 let credentials = null;
 let lesson = "find";
@@ -89,7 +90,7 @@ function showScreen(name) {
     screen.hidden = key !== name;
   });
   document.querySelector("#unset-button").hidden = name === "setup";
-  timerElement.hidden = name === "setup" || name === "complete";
+  timerElement.hidden = name === "setup" || elapsedSeconds === 0;
 }
 
 function currentValue() {
@@ -134,12 +135,15 @@ function formatTime(seconds) {
 function updateTimer() {
   timerElement.textContent = formatTime(elapsedSeconds);
   timerElement.classList.toggle("overtime", elapsedSeconds >= 300);
+  timerElement.hidden = !screens.setup.hidden || elapsedSeconds === 0;
 }
 
-function startTimer() {
+function startTimer(reset = true) {
   window.clearInterval(timerId);
-  elapsedSeconds = 0;
-  updateTimer();
+  if (reset) {
+    elapsedSeconds = 0;
+    updateTimer();
+  }
   timerId = window.setInterval(() => {
     elapsedSeconds += 1;
     updateTimer();
@@ -194,12 +198,13 @@ function drawKeyboard(container, expected, mappedValue = "", visible = showMap, 
   });
 }
 
-function renderSequenceInto(container, value, activePosition, mask, characterSubject) {
+function renderSequenceInto(container, value, activePosition, mask, characterSubject, hideRemaining = false) {
   container.replaceChildren();
   [...value].forEach((character, index) => {
     const item = document.createElement("span");
-    item.textContent = mask ? "•" : character;
+    item.textContent = hideRemaining && index >= activePosition ? "" : mask ? "•" : character;
     item.className = index < activePosition ? "done" : index === activePosition ? "current" : "";
+    if (hideRemaining && index > activePosition) item.classList.add("ghost");
     if (characterSubject === "username") {
       item.classList.add("username-character");
     } else if (isUppercase(character)) {
@@ -212,10 +217,8 @@ function renderSequenceInto(container, value, activePosition, mask, characterSub
 }
 
 function renderSequence(value, activePosition, mask) {
-  sequence.hidden = lesson === "recall";
-  sequence.replaceChildren();
-  if (lesson === "recall") return;
-  renderSequenceInto(sequence, value, activePosition, mask, subject);
+  sequence.hidden = false;
+  renderSequenceInto(sequence, value, activePosition, lesson === "recall" ? false : mask, subject, lesson === "recall");
 }
 
 function renderPractice() {
@@ -252,13 +255,30 @@ function celebrate(kind) {
 function finishPractice() {
   window.clearInterval(timerId);
   timerId = null;
+  chooseAvatar(completeAvatar);
   showScreen("complete");
+  window.requestAnimationFrame(() => screens.complete.focus());
   celebrate("success");
 }
 
 function showTransition(next) {
   continueAfterTransition = next;
+  chooseAvatar(transitionAvatar);
   showScreen("transition");
+  window.requestAnimationFrame(() => screens.transition.focus());
+}
+
+function chooseAvatar(element) {
+  const avatarIndex = Math.floor(Math.random() * 12);
+  const column = avatarIndex % 4;
+  const row = Math.floor(avatarIndex / 4);
+  element.style.backgroundPosition = `${column * 33.333333}% ${row * 50}%`;
+}
+
+function continueTransition() {
+  const next = continueAfterTransition;
+  continueAfterTransition = null;
+  if (next) next();
 }
 
 function restartPractice() {
@@ -266,7 +286,7 @@ function restartPractice() {
     clearSession();
     return;
   }
-  startTimer();
+  startTimer(false);
   showScreen("practice");
   resetLesson("find");
 }
@@ -349,12 +369,17 @@ function enterLogin() {
   document.querySelector("#show-password").checked = false;
   loginPassword.type = "password";
   showMap = false;
-  loginLessonSelect.value = "login";
+  lessonSelect.value = "login";
   drawKeyboard(loginKeyboard, "", "", false);
   loginUsername.focus();
 }
 
 function chooseLesson(value) {
+  if (!credentials) {
+    lesson = value;
+    lessonSelect.value = value;
+    return;
+  }
   if (value === "login") {
     enterLogin();
     return;
@@ -370,15 +395,16 @@ document.querySelector("#setup-form").addEventListener("submit", (event) => {
     password: document.querySelector("#password").value
   };
   document.querySelector("#setup-form").reset();
-  startTimer();
   showScreen("practice");
   resetLesson("find");
 });
 
 lessonSelect.addEventListener("change", () => chooseLesson(lessonSelect.value));
-loginLessonSelect.addEventListener("change", () => chooseLesson(loginLessonSelect.value));
 
 document.addEventListener("keydown", (event) => {
+  if (!timerId && credentials && event.key.length === 1 && (!screens.practice.hidden || !screens.login.hidden)) {
+    startTimer();
+  }
   acceptPracticeKey(event);
   if (!screens.login.hidden && event.target !== loginUsername && event.target !== loginPassword && event.key.length === 1) {
     const activeInput = passwordForm.hidden ? loginUsername : loginPassword;
@@ -386,10 +412,11 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-screens.transition.addEventListener("click", () => {
-  const next = continueAfterTransition;
-  continueAfterTransition = null;
-  if (next) next();
+screens.transition.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    continueTransition();
+  }
 });
 
 usernameForm.addEventListener("submit", (event) => {
@@ -464,7 +491,19 @@ loginPassword.addEventListener("keydown", (event) => {
   lastPasswordShift = event.shiftKey;
 });
 
-document.querySelector("#clear-button").addEventListener("click", restartPractice);
+screens.complete.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    restartPractice();
+  }
+});
+document.addEventListener("click", () => {
+  if (!screens.transition.hidden) {
+    continueTransition();
+  } else if (!screens.complete.hidden) {
+    restartPractice();
+  }
+});
 document.querySelector("#unset-button").addEventListener("click", clearSession);
 window.addEventListener("beforeunload", () => {
   credentials = null;
