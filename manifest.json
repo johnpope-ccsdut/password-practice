@@ -3,6 +3,9 @@
   "name": "Keyboard Practice",
   "version": "0.1.0",
   "description": "A private, local keyboard practice session.",
+  "icons": {
+    "128": "icon-128.png"
+  },
   "action": {
     "default_title": "Open keyboard practice"
   },
